@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Zomato · food delivery</title>
+  <!-- Font Awesome 5 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 0 0 24px 0;
+    }
+
+    /* main container – max width like a mobile app */
+    .app-wrapper {
+      max-width: 480px;
+      width: 100%;
+      background-color: white;
+      box-shadow: 0 0 30px rgba(0,0,0,0.04);
+      border-radius: 0 0 28px 28px;
+      overflow: hidden;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* ----- HEADER (Zomato style) ----- */
+    .header {
+      background: #cb202d; /* zomato red */
+      padding: 18px 18px 14px 18px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+    }
+    .brand i {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    .brand span {
+      background: white;
+      color: #cb202d;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 30px;
+      margin-left: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 16px;
+      font-size: 1.2rem;
+    }
+    .header-actions i {
+      opacity: 0.9;
+      transition: 0.2s;
+      cursor: default;
+    }
+    .header-actions i:hover { opacity: 1; }
+
+    /* location & search */
+    .location-bar {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 40px;
+      padding: 2px 2px 2px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .location-bar i {
+      color: #cb202d;
+      font-size: 1rem;
+    }
+    .location-bar .loc-text {
+      color: #1a1a1a;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0 8px 0 6px;
+      white-space: nowrap;
+    }
+    .location-bar .loc-text small {
+      font-weight: 300;
+      color: #777;
+      margin-left: 4px;
+    }
+    .location-bar .search-input {
+      flex: 1;
+      border: none;
+      padding: 12px 8px 12px 4px;
+      font-size: 0.9rem;
+      background: transparent;
+      outline: none;
+      min-width: 80px;
+      color: #222;
+    }
+    .location-bar .search-input::placeholder {
+      color: #aaa;
+      font-weight: 300;
+    }
+    .location-bar .search-icon {
+      background: #cb202d;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 40px;
+      font-size: 1rem;
+      cursor: default;
+      transition: 0.15s;
+    }
+    .location-bar .search-icon i {
+      color: white;
+    }
+
+    /* ----- CATEGORY PILLS (scroll) ----- */
+    .category-scroll {
+      display: flex;
+      gap: 14px;
+      padding: 18px 18px 12px 18px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: thin;
+      background: white;
+      border-bottom: 1px solid #f0f0f0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-scroll::-webkit-scrollbar {
+      height: 3px;
+      background: #eee;
+    }
+    .category-scroll::-webkit-scrollbar-thumb {
+      background: #cb202d;
+      border-radius: 20px;
+    }
+    .category-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #3d3d3d;
+      transition: 0.2s;
+      cursor: default;
+      min-width: 60px;
+    }
+    .category-item i {
+      font-size: 1.8rem;
+      color: #cb202d;
+      background: #fef0f0;
+      padding: 10px 12px;
+      border-radius: 30px;
+      transition: 0.1s;
+    }
+    .category-item:hover i {
+      background: #ffdddd;
+    }
+    .category-item span {
+      margin-top: 2px;
+      opacity: 0.8;
+    }
+
+    /* ----- PROMO BANNER ----- */
+    .promo-banner {
+      background: linear-gradient(145deg, #fcedea, #fce4e0);
+      margin: 16px 18px 12px 18px;
+      padding: 16px 18px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(203, 32, 45, 0.08);
+    }
+    .promo-banner .promo-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .promo-banner .promo-text strong {
+      font-size: 1.1rem;
+      color: #1a1a1a;
+    }
+    .promo-banner .promo-text span {
+      font-size: 0.8rem;
+      color: #555;
+      margin-top: 2px;
+    }
+    .promo-banner .promo-btn {
+      background: #cb202d;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      box-shadow: 0 4px 8px rgba(203,32,45,0.2);
+      cursor: default;
+    }
+
+    /* ----- SECTION TITLE ----- */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 14px 18px 6px 18px;
+    }
+    .section-title h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1f1f1f;
+    }
+    .section-title a {
+      color: #cb202d;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: default;
+    }
+
+    /* ----- RESTAURANT CARDS (grid) ----- */
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 4px 18px 12px 18px;
+    }
+
+    .restaurant-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+      border: 1px solid #f1f1f1;
+      overflow: hidden;
+      transition: 0.15s;
+      cursor: default;
+    }
+    .restaurant-card:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+      border-color: #e0e0e0;
+    }
+    .card-img {
+      height: 100px;
+      background: #f0f0f0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      color: #cb202d;
+      background: #fef2f2;
+    }
+    .card-img .card-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 10px;
+      border-radius: 30px;
+      font-weight: 500;
+    }
+    .card-body {
+      padding: 10px 12px 12px 12px;
+    }
+    .card-body h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1f1f1f;
+    }
+    .card-body .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      font-size: 0.7rem;
+      color: #5e5e5e;
+    }
+    .card-meta .rating {
+      background: #1f8b4c;
+      color: white;
+      padding: 1px 10px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.65rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .card-meta .price {
+      font-weight: 500;
+      color: #333;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: flex-start;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 0.6rem;
+      color: #777;
+    }
+    .card-footer i {
+      color: #cb202d;
+      margin-right: 2px;
+    }
+
+    /* ----- BOTTOM NAV (like app) ----- */
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      background: white;
+      padding: 10px 12px 10px 12px;
+      border-top: 1px solid #ececec;
+      margin-top: 8px;
+      border-radius: 0 0 28px 28px;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.02);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #8c8c8c;
+      font-size: 0.65rem;
+      transition: 0.1s;
+      cursor: default;
+      gap: 2px;
+    }
+    .nav-item i {
+      font-size: 1.3rem;
+      margin-bottom: 2px;
+    }
+    .nav-item.active {
+      color: #cb202d;
+      font-weight: 500;
+    }
+    .nav-item.active i {
+      color: #cb202d;
+    }
+
+    /* --- utility --- */
+    .spacer {
+      height: 4px;
+    }
+    .text-muted {
+      color: #888;
+    }
+
+    /* responsive fine-tune */
+    @media (max-width: 480px) {
+      .app-wrapper { border-radius: 0; }
+      .header { padding: 16px; }
+      .location-bar .loc-text { font-size: 0.8rem; }
+    }
+    @media (max-width: 380px) {
+      .restaurant-grid { gap: 8px; }
+      .card-body h4 { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- HEADER : Zomato red + location + search -->
+  <header class="header">
+    <div class="header-top">
+      <div class="brand">
+        <i class="fas fa-utensils"></i> Zomato
+        <span>IN</span>
+      </div>
+      <div class="header-actions">
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-user-circle"></i>
+      </div>
+    </div>
+
+    <div class="location-bar">
+      <i class="fas fa-map-pin"></i>
+      <span class="loc-text">New Delhi <small>▼</small></span>
+      <input type="text" class="search-input" placeholder="Search for restaurant, cuisine..." value="Pizza">
+      <span class="search-icon"><i class="fas fa-search"></i></span>
+    </div>
+  </header>
+
+  <!-- category scroll (horizontal) -->
+  <div class="category-scroll">
+    <div class="category-item"><i class="fas fa-pizza-slice"></i><span>Pizza</span></div>
+    <div class="category-item"><i class="fas fa-hamburger"></i><span>Burger</span></div>
+    <div class="category-item"><i class="fas fa-coffee"></i><span>Coffee</span></div>
+    <div class="category-item"><i class="fas fa-fish"></i><span>Seafood</span></div>
+    <div class="category-item"><i class="fas fa-cocktail"></i><span>Drinks</span></div>
+    <div class="category-item"><i class="fas fa-ice-cream"></i><span>Dessert</span></div>
+    <div class="category-item"><i class="fas fa-leaf"></i><span>Vegan</span></div>
+  </div>
+
+  <!-- promo banner -->
+  <div class="promo-banner">
+    <div class="promo-text">
+      <strong>🔥 40% off</strong>
+      <span>on first order · use code ZOM40</span>
+    </div>
+    <div class="promo-btn">Order now</div>
+  </div>
+
+  <!-- restaurant section -->
+  <div class="section-title">
+    <h2>Popular restaurants</h2>
+    <a href="#">View all →</a>
+  </div>
+
+  <!-- 6 restaurant cards (grid 2 cols) -->
+  <div class="restaurant-grid">
+    <!-- card 1 -->
+    <div class="restaurant-card">
+      <div class="card-img" style="background: #fbe9e7;">
+        <i class="fas fa-pizza-slice"></i>
+        <span class="card-tag">⭐ 4.3</span>
+      </div>
+      <div class="card-body">
+        <h4>Pizza Hut</h4>
+        <div class="card-meta">
+          <span class="rating"><i class="fas fa-star" style="font-size:0.5rem;"></i> 4.3</span>
+          <span class="price">₹250 for one</span>
+        </div>
+        <div class="card-footer">
+          <span><i class="fas fa-clock"></i> 25–35 min</span>
+          <span><i class="fas fa-map-marker-alt"></i> 1.2 km</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- card 2 -->
+    <div class="restaurant-card">
+      <div class="card-img" style="background: #fce4d6;">
+        <i class="fas fa-hamburger"></i>
+        <span class="card-tag">⭐ 4.6</span>
+      </div>
+      <div class="card-body">
+        <h4>Burger King</h4>
+        <div class="card-meta">
+          <span class="rating"><i class="fas fa-star" style="font-size:0.5rem;"></i> 4.6</span>
+          <span class="price">₹180</span>
+        </div>
+        <div class="card-footer">
+          <span><i class="fas fa-clock"></i> 15–20 min</span>
+          <span><i class="fas fa-map-marker-alt"></i> 0.8 km</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- card 3 -->
+    <div class="restaurant-card">
+      <div class="card-img" style="background: #e8f0e8;">
+        <i class="fas fa-fish"></i>
+        <span class="card-tag">⭐ 4.1</span>
+      </div>
+      <div class="card-body">
+        <h4>Sea Catch</h4>
+        <div class="card-meta">
+          <span class="rating"><i class="fas fa-star" style="font-size:0.5rem;"></i> 4.1</span>
+          <span class="price">₹320</span>
+        </div>
+        <div class="card-footer">
+          <span><i class="fas fa-clock"></i> 30–40 min</span>
+          <span><i class="fas fa-map-marker-alt"></i> 2.1 km</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- card 4 -->
+    <div class="restaurant-card">
+      <div class="card-img" style="background: #f5e6d3;">
+        <i class="fas fa-mug-hot"></i>
+        <span class="card-tag">⭐ 4.4</span>
+      </div>
+      <div class="card-body">
+        <h4>Starbucks</h4>
+        <div class="card-meta">
+          <span class="rating"><i class="fas fa-star" style="font-size:0.5rem;"></i> 4.4</span>
+          <span class="price">₹210</span>
+        </div>
+        <div class="card-footer">
+          <span><i class="fas fa-clock"></i> 12–18 min</span>
+          <span><i class="fas fa-map-marker-alt"></i> 0.5 km</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- card 5 -->
+    <div class="restaurant-card">
+      <div class="card-img" style="background: #f3e7f0;">
+        <i class="fas fa-ice-cream"></i>
+        <span class="card-tag">⭐ 4.7</span>
+      </div>
+      <div class="card-body">
+        <h4>Gelato Lab</h4>
+        <div class="card-meta">
+          <span class="rating"><i class="fas fa-star" style="font-size:0.5rem;"></i> 4.7</span>
+          <span class="price">₹150</span>
+        </div>
+        <div class="card-footer">
+          <span><i class="fas fa-clock"></i> 10–15 min</span>
+          <span><i class="fas fa-map-marker-alt"></i> 1.8 km</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- card 6 -->
+    <div class="restaurant-card">
+      <div class="card-img" style="background: #f0ede5;">
+        <i class="fas fa-seedling"></i>
+        <span class="card-tag">⭐ 4.2</span>
+      </div>
+      <div class="card-body">
+        <h4>Green Bowl</h4>
+        <div class="card-meta">
+          <span class="rating"><i class="fas fa-star" style="font-size:0.5rem;"></i> 4.2</span>
+          <span class="price">₹190</span>
+        </div>
+        <div class="card-footer">
+          <span><i class="fas fa-clock"></i> 20–25 min</span>
+          <span><i class="fas fa-map-marker-alt"></i> 1.5 km</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation (like app) -->
+  <div class="bottom-nav">
+    <div class="nav-item active">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </div>
+    <div class="nav-item">
+      <i class="fas fa-search"></i>
+      <span>Search</span>
+    </div>
+    <div class="nav-item">
+      <i class="fas fa-shopping-bag"></i>
+      <span>Orders</span>
+    </div>
+    <div class="nav-item">
+      <i class="fas fa-heart"></i>
+      <span>Favourites</span>
+    </div>
+    <div class="nav-item">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </div>
+  </div>
+
+  <!-- small footer note -->
+  <div style="padding: 14px 18px 6px 18px; font-size:0.7rem; color:#aaa; text-align:center; border-top:1px solid #f3f3f3; margin-top:8px;">
+    <i class="fas fa-utensils" style="color:#cb202d;"></i> Zomato · food delivery clone
+  </div>
+</div>
+<!-- end app-wrapper -->
+</body>
+</html>
